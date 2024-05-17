@@ -1,21 +1,36 @@
-#!/usr/bin/env bash
+#!/usr/bin/python3
 """this script is to creat BaseModel"""
 import uuid
 from datetime import datetime
+from models.engine import file_storage
+from  models import storage
+import json
 
 
 class BaseModel:
     """Partent class Model"""
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         """init thr psrsmter"""
-        self.updated_at = datetime.now()
-        self.created_at = datetime.now()
-        self.id = str(uuid.uuid4())
+        if kwargs is not None and  len(kwargs) != 0:
+            for ke, v in kwargs.items():
+                if ke == 'created_at':
+                    setattr(self, ke, datetime.strptime(v, '%Y-%m-%dT%H:%M:%S.%f'))
+                elif ke == 'updated_at':
+                    setattr(self, ke, datetime.strptime(v, '%Y-%m-%dT%H:%M:%S.%f'))
+                elif ke != '__class__':
+                    setattr(self, ke, v)
+
+        else:
+            self.created_at = datetime.now()
+            self.id = str(uuid.uuid4())
+            self.updated_at = datetime.now()
+            storage.new(self)
 
     def save(self):
         """updates the public instance attribute updated_at"""
         self.updated_at = datetime.now()
+        storage.save()
 
     def to_dict(self):
         """ returns a dictionary containing all keys/value"""
