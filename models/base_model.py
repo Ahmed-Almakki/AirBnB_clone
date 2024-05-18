@@ -34,12 +34,12 @@ class BaseModel:
 
     def to_dict(self):
         """ returns a dictionary containing all keys/value"""
-        my_obj = self.__dict__.copy()
-        my_obj['id'] = self.id
-        my_obj['updated_at'] = self.updated_at.isoformat()
-        my_obj['created_at'] = self.created_at.isoformat()
-        my_obj['__class__'] = type(self).__name__
-        return my_obj
+        obj = self.__dict__.copy()
+        obj['id'] = self.id
+        obj['updated_at'] = self.updated_at.isoformat()
+        obj['created_at'] = self.created_at.isoformat()
+        obj['__class__'] = type(self).__name__
+        return obj
 
     def __str__(self):
         """
