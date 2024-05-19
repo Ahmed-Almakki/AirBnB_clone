@@ -3,6 +3,11 @@
 import cmd
 from models.base_model import BaseModel
 from models import storage
+import json
+
+
+file = storage.__class__.__dict__['_FileStorage__file_path']
+print(file)
 
 class HBNBCommand(cmd.Cmd):
     """Creating a terminal"""
@@ -29,18 +34,65 @@ class HBNBCommand(cmd.Cmd):
         else:
             print("** class doesn't exist **")
 
-#    def do_show(arg, id_a):
-#        """Prints the string representation of an instance"""
-#        restored = storage.reload()
-#        print(restored)
+    def do_show(self,arg):
+        """Prints the string representation of an instance"""
+        args = arg.strip().split(" ")
+        if len(args) == 2:
+            if args[0] == "BaseModel":
+                x = storage.all()
+                idd = []
+                for id in x.keys():
+                    idd.append(id.split(".")[1])
+                if args[1] not in idd:
+                    print(" ** no instance found **")
+                else:
+                    obj = x[id]
+                    print(obj)
+        elif args[0] == "BaseModel" and len(args) == 1:
+            print("** instance id missing **")
+        elif not arg:
+            print("** class doesn't exist **")
+        elif args[0] != "BaseModel" and len(args) == 1:
+            print("** class name missing **")
+        
+
+    def do_destroy(self, arg):
+        """Deletes an instance based on the class name and id"""
+        args = arg.strip().split(" ")
+        if len(args) == 2:
+            if args[0] == "BaseModel":
+                x = storage.all()
+                idd = []
+                for id in x.keys():
+                    idd.append(id.split(".")[1])
+                if args[1] not in idd:
+                    print("** no instance found **")
+                else:
+                    with open(file, 'r') as f:
+                        js = json.load(f)
+                    del js[id]
+                    del x[id]
+                    with open(file, 'w') as f:
+                        json.dump(js, f)
+                    
+                        
+        elif args[0] == "BaseModel" and len(args) == 1:
+            print("** instance id missing **")
+        elif not arg:
+            print("** class doesn't exist **")
+        elif args[0] != "BaseModel" and len(args) == 1:
+            print("** class name missing **")
+
     def do_all(self, arg):
         """Prints all string representation of all instances"""
-        if globals().get(arg) is None:
+        if arg != "BaseModel":
             print("** class doesn't exist **")
         else:
-            x = BaseModel()
-            print(list(x))
-
+            x = storage.all()
+            lst = []
+            for all_obj in x.keys():
+                lst.append(str(x[all_obj]))
+            print(lst)
 #   #alaising
     do_EOF = do_quit
 
