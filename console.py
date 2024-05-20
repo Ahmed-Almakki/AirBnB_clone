@@ -34,24 +34,31 @@ class HBNBCommand(cmd.Cmd):
         else:
             print("** class doesn't exist **")
 
+
     def do_show(self,arg):
         """Prints the string representation of an instance"""
         args = arg.strip().split(" ")
+        
         if len(args) == 2:
             if args[0] == "BaseModel":
                 x = storage.all()
                 idd = []
                 for id in x.keys():
                     idd.append(id.split(".")[1])
+                
                 if args[1] not in idd:
                     print(" ** no instance found **")
+                
                 else:
                     obj = x[id]
                     print(obj)
+        
         elif args[0] == "BaseModel" and len(args) == 1:
             print("** instance id missing **")
+        
         elif not arg:
             print("** class doesn't exist **")
+        
         elif args[0] != "BaseModel" and len(args) == 1:
             print("** class name missing **")
         
@@ -59,29 +66,37 @@ class HBNBCommand(cmd.Cmd):
     def do_destroy(self, arg):
         """Deletes an instance based on the class name and id"""
         args = arg.strip().split(" ")
-        if len(args) == 2:
+        
+        if len(args) == 2:    
             if args[0] == "BaseModel":
                 x = storage.all()
                 idd = []
+                
                 for id in x.keys():
                     idd.append(id.split(".")[1])
+                
                 if args[1] not in idd:
                     print("** no instance found **")
+                
                 else:
                     with open(file, 'r') as f:
-                        js = json.load(f)
-                    del js[id]
-                    del x[id]
+                        js = json.load(f) 
+                    key = "{}.{}".format(args[0], args[1])
+                    del js[key]
+                    del x[key]
                     with open(file, 'w') as f:
                         json.dump(js, f)
-                    
-                        
+                        f.close()
+
         elif args[0] == "BaseModel" and len(args) == 1:
             print("** instance id missing **")
+
         elif not arg:
             print("** class doesn't exist **")
+   
         elif args[0] != "BaseModel" and len(args) == 1:
             print("** class name missing **")
+
 
     def do_all(self, arg):
         """Prints all string representation of all instances"""
@@ -93,7 +108,48 @@ class HBNBCommand(cmd.Cmd):
             for all_obj in x.keys():
                 lst.append(str(x[all_obj]))
             print(lst)
-#   #alaising
+
+    def do_update(self, arg):
+        """Updates an instance based on the class name and id"""
+        args = arg.strip().split(" ")
+        if len(args) >= 4:
+            args = args[:4]
+            lst = []
+            x = storage.all()
+
+            for id in x.keys():
+                lst.append(id.split(".")[1])
+            
+            if args[1] not in lst:
+                print("** no instance found **")
+            
+            else:
+                key = "{}.{}".format(args[0], args[1])
+#                x[key].update({[args[2]]: args[3]})
+                with open(file, 'r') as f:
+                    js = json.load(f)
+                
+                js[key].update({args[2]: args[3]})
+                
+                with open(file, 'w') as f:
+                    json.dump(js, f)
+                    f.close()
+
+        elif not arg:
+            print("** class name missing **")
+       
+        elif args[0] != "BaseModel" and len(args) == 1:
+            print("** class doesn't exist **")
+      
+        elif args[0] == "BaseModel" and len(args) == 1:
+            print("** instance id missing **") 
+      
+        elif len(args) < 4 and len(args) > 1:
+            if len(args) == 3:
+                print("** value missing **")
+            elif len(args) == 2:
+                print("** attribute name missing **") 
+#   alaising
     do_EOF = do_quit
 
 
