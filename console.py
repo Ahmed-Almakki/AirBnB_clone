@@ -47,7 +47,7 @@ class HBNBCommand(cmd.Cmd):
                     idd.append(id.split(".")[1])
                 
                 if args[1] not in idd:
-                    print(" ** no instance found **")
+                    print("** no instance found **")
                 
                 else:
                     obj = x[id]
@@ -92,10 +92,10 @@ class HBNBCommand(cmd.Cmd):
             print("** instance id missing **")
 
         elif not arg:
-            print("** class doesn't exist **")
+            print("** class name missing **")
    
         elif args[0] != "BaseModel" and len(args) == 1:
-            print("** class name missing **")
+            print("** class doesn't exist **")
 
 
     def do_all(self, arg):
