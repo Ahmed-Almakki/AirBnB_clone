@@ -7,7 +7,7 @@ import json
 
 
 file = storage.__class__.__dict__['_FileStorage__file_path']
-print(file)
+
 
 class HBNBCommand(cmd.Cmd):
     """Creating a terminal"""
