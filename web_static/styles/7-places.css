@@ -1,0 +1,38 @@
+/* place */
+h1{
+font-size: 30px;
+position: absolute;
+}
+
+.place{
+    width: 390px;
+    padding: 20px;
+    text-align: center;
+
+}
+
+article{
+    position: relative;
+    width: 390px;
+    padding: 20px;
+    margin: 20px;
+    border: 1px solid #FF5A5F;
+    border-radius: 4px;
+    top: 50px;
+    left: -30px;
+}
+.place ul{
+    display: inline-flex;
+}
+.place ul li{
+    list-style-type: none;
+}
+#mid article{
+    position: relative;
+    margin-left: 250px;
+    top: 20px;
+}
+
+.place h2{
+    font-size: 30px;
+}
