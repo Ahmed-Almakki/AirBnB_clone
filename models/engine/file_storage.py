@@ -28,7 +28,7 @@ class FileStorage:
     def reload(self):
         """deserializes the JSON file to __objects"""
         from models.base_model import BaseModel
-        from modells.user import User
+        from models.user import User
 
         class_map = {"BaseModel": BaseModel, "User": User}
 
