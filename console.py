@@ -3,6 +3,7 @@
 import cmd
 from models.base_model import BaseModel
 from models import storage
+import shlex
 import json
 
 
@@ -25,130 +26,98 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, arg):
         """Creates a new instance of BaseModel"""
-        if arg == "BaseModel":
-            a = BaseModel()
-            a.save()
-            print(a.id)
-        elif not arg:
+        line = shlex.split(arg)
+        if len(line) < 1:
             print("** class name missing **")
         else:
-            print("** class doesn't exist **")
+            if line[0] != "BaseModel":
+                print("** class doesn't exist **")
+            else:
+                nw = BaseModel()
+                nw.save()
+                print(nw.id)
 
-
-    def do_show(self,arg):
+    def do_show(self, arg):
         """Prints the string representation of an instance"""
-        args = arg.strip().split(" ")
-        
-        if len(args) == 2:
-            if args[0] == "BaseModel":
-                x = storage.all()
-                idd = []
-                for id in x.keys():
-                    idd.append(id.split(".")[1])
-                
-                if args[1] not in idd:
-                    print("** no instance found **")
-                
-                else:
-                    obj = x[id]
-                    print(obj)
-        
-        elif args[0] == "BaseModel" and len(args) == 1:
-            print("** instance id missing **")
-        
-        elif not arg:
-            print("** class doesn't exist **")
-        
-        elif args[0] != "BaseModel" and len(args) == 1:
+        line = shlex.split(arg)
+        lst = [i for i in storage.all().keys()]
+        lst = [i.split(".")[1] for i in lst]
+        if len(line) < 1:
             print("** class name missing **")
-        
+        elif len(line) == 1:
+            print("** instance id missing **")
+        else:
+            if line[0] != "BaseModel":
+                print("** class doesn't exist **")
+            elif line[1] not in lst:
+                print("** no instance found **")
+            else:
+                x = storage.all()
+                k = line[0] + "." + line[1]
+                print(x[k])
 
     def do_destroy(self, arg):
         """Deletes an instance based on the class name and id"""
-        args = arg.strip().split(" ")
-        
-        if len(args) == 2:    
-            if args[0] == "BaseModel":
-                x = storage.all()
-                idd = []
-                
-                for id in x.keys():
-                    idd.append(id.split(".")[1])
-                
-                if args[1] not in idd:
-                    print("** no instance found **")
-                
-                else:
-                    with open(file, 'r') as f:
-                        js = json.load(f) 
-                    key = "{}.{}".format(args[0], args[1])
-                    del js[key]
-                    del x[key]
-                    with open(file, 'w') as f:
-                        json.dump(js, f)
-                        f.close()
-
-        elif args[0] == "BaseModel" and len(args) == 1:
-            print("** instance id missing **")
-
-        elif not arg:
+        line = shlex.split(arg)
+        lst = [i for i in storage.all().keys()]
+        lst = [i.split(".")[1] for i in lst]
+        if len(line) < 1:
             print("** class name missing **")
-   
-        elif args[0] != "BaseModel" and len(args) == 1:
+        elif line[0] != "BaseModel":
             print("** class doesn't exist **")
-
+        elif len(line) == 1:
+            print("** instance id missing **")
+        else:
+            if line[1] not in lst:
+                print("** no instance found **")
+            else:
+                stor = storage.all()
+                for i in stor.keys():
+                    if i == line[0] + '.' + line[1]:
+                        stor.pop(i)
+                        break
+                storage.save()
 
     def do_all(self, arg):
         """Prints all string representation of all instances"""
-        if arg != "BaseModel":
-            print("** class doesn't exist **")
-        else:
-            x = storage.all()
+        line = shlex.split(arg)
+        if (len(line) == 0) or (line[0] == "BaseModel"):
             lst = []
-            for all_obj in x.keys():
-                lst.append(str(x[all_obj]))
-            print(lst)
+            with open("file.json", "r") as file:
+                data = json.load(file)
+                for i in data.values():
+                    x = BaseModel(**i)
+                    lst.append(str(x))
+                print(lst)
+                file.close()
+        elif line[0] and line[0] != "BaseModel":
+            print("** class doesn't exist **")
 
     def do_update(self, arg):
         """Updates an instance based on the class name and id"""
-        args = arg.strip().split(" ")
-        if len(args) >= 4:
-            args = args[:4]
-            lst = []
-            x = storage.all()
-
-            for id in x.keys():
-                lst.append(id.split(".")[1])
-            
-            if args[1] not in lst:
-                print("** no instance found **")
-            
-            else:
-                key = "{}.{}".format(args[0], args[1])
-#                x[key].update({[args[2]]: args[3]})
-                with open(file, 'r') as f:
-                    js = json.load(f)
-                
-                js[key].update({args[2]: args[3]})
-                
-                with open(file, 'w') as f:
-                    json.dump(js, f)
-                    f.close()
-
-        elif not arg:
+        line = shlex.split(arg)
+        lst = [i for i in storage.all().keys()]
+        lst = [i.split(".")[1] for i in lst]
+        if len(line) < 1:
             print("** class name missing **")
-       
-        elif args[0] != "BaseModel" and len(args) == 1:
+        elif line[0] != "BaseModel":
             print("** class doesn't exist **")
-      
-        elif args[0] == "BaseModel" and len(args) == 1:
-            print("** instance id missing **") 
-      
-        elif len(args) < 4 and len(args) > 1:
-            if len(args) == 3:
-                print("** value missing **")
-            elif len(args) == 2:
-                print("** attribute name missing **") 
+        elif len(line) == 1:
+            print("** instance id missing **")
+        elif line[1] not in lst:
+            print("** no instance found **")
+        elif len(line) == 2:
+            print("** attribute name missing **")
+        elif len(line) == 3:
+            print("** value missing **")
+        else:
+            kkey = line[0] + '.' + line[1]
+            obj = storage.all().get(kkey)
+            setattr(obj, line[2], line[3])
+            obj.save()
+            storage.save()
+
+
 #   alaising
     do_EOF = do_quit
 
