@@ -35,11 +35,11 @@ class HBNBCommand(cmd.Cmd):
                 print("** class doesn't exist **")
             else:
                 for i in class_map.keys():
-                    if i == line[0]
-                    obj = class_map.get(line[0])
-                    new = obj()
-                    new.save()
-                    print(new.id)
+                    if i == line[0]:
+                        obj = class_map.get(line[0])
+                        new = obj()
+                        new.save()
+                        print(new.id)
 
     def do_show(self, arg):
         """Prints the string representation of an instance"""
