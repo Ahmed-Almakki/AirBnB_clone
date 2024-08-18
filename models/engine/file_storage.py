@@ -28,6 +28,9 @@ class FileStorage:
     def reload(self):
         """deserializes the JSON file to __objects"""
         from models.base_model import BaseModel
+        from modells.user import User
+
+        class_map = {"BaseModel": BaseModel, "User": User}
 
         if not os.path.isfile(self.__file_path):
             return
@@ -35,5 +38,7 @@ class FileStorage:
             with open(self.__file_path, 'r') as file:
                 json_data = json.load(file)
                 for key, value in json_data.items():
-                    obj = BaseModel(**value)
+                    cls = value.get("__class__")
+                    cls = class_map.get(cls)
+                    obj = cls(**value)
                     self.__objects[key] = obj

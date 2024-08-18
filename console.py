@@ -5,9 +5,10 @@ from models.base_model import BaseModel
 from models import storage
 import shlex
 import json
+from models.user import User
 
 
-file = storage.__class__.__dict__['_FileStorage__file_path']
+class_map = {"BaseModel": BaseModel, "User": User}
 
 
 class HBNBCommand(cmd.Cmd):
@@ -30,12 +31,15 @@ class HBNBCommand(cmd.Cmd):
         if len(line) < 1:
             print("** class name missing **")
         else:
-            if line[0] != "BaseModel":
+            if line[0] not in class_map.keys():
                 print("** class doesn't exist **")
             else:
-                nw = BaseModel()
-                nw.save()
-                print(nw.id)
+                for i in class_map.keys():
+                    if i == line[0]
+                    obj = class_map.get(line[0])
+                    new = obj()
+                    new.save()
+                    print(new.id)
 
     def do_show(self, arg):
         """Prints the string representation of an instance"""
@@ -47,7 +51,7 @@ class HBNBCommand(cmd.Cmd):
         elif len(line) == 1:
             print("** instance id missing **")
         else:
-            if line[0] != "BaseModel":
+            if line[0] not in class_map.keys():
                 print("** class doesn't exist **")
             elif line[1] not in lst:
                 print("** no instance found **")
@@ -63,7 +67,7 @@ class HBNBCommand(cmd.Cmd):
         lst = [i.split(".")[1] for i in lst]
         if len(line) < 1:
             print("** class name missing **")
-        elif line[0] != "BaseModel":
+        elif line[0] not in class_map.keys():
             print("** class doesn't exist **")
         elif len(line) == 1:
             print("** instance id missing **")
@@ -81,16 +85,17 @@ class HBNBCommand(cmd.Cmd):
     def do_all(self, arg):
         """Prints all string representation of all instances"""
         line = shlex.split(arg)
-        if (len(line) == 0) or (line[0] == "BaseModel"):
+        if (len(line) == 0) or (line[0] in class_map.keys()):
             lst = []
             with open("file.json", "r") as file:
                 data = json.load(file)
                 for i in data.values():
-                    x = BaseModel(**i)
+                    obj = class_map.get(line[0])
+                    x = obj(**i)
                     lst.append(str(x))
                 print(lst)
                 file.close()
-        elif line[0] and line[0] != "BaseModel":
+        elif line[0] and line[0] not in class_map.keys():
             print("** class doesn't exist **")
 
     def do_update(self, arg):
@@ -100,7 +105,7 @@ class HBNBCommand(cmd.Cmd):
         lst = [i.split(".")[1] for i in lst]
         if len(line) < 1:
             print("** class name missing **")
-        elif line[0] != "BaseModel":
+        elif line[0] not in class_map.keys():
             print("** class doesn't exist **")
         elif len(line) == 1:
             print("** instance id missing **")
