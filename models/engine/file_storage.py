@@ -29,8 +29,16 @@ class FileStorage:
         """deserializes the JSON file to __objects"""
         from models.base_model import BaseModel
         from models.user import User
+        from models.review import Review
+        from models.state import State
+        from models.city import City
+        from models.place import Place
+        from models.amenity import Amenity
 
-        class_map = {"BaseModel": BaseModel, "User": User}
+        class_map = {"BaseModel": BaseModel, "User": User,
+                     "Place", Place, "State": State,
+                     "City": City, "Amenity": Amenity,
+                     "Review": Review}
 
         if not os.path.isfile(self.__file_path):
             return
