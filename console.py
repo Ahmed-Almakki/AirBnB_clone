@@ -13,7 +13,7 @@ from models.place import Place
 from models.amenity import Amenity
 
 class_map = {"BaseModel": BaseModel, "User": User,
-             "Place", Place, "State": State,
+             "Place": Place, "State": State,
              "City": City, "Amenity": Amenity,
              "Review": Review}
 
