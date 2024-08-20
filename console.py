@@ -52,7 +52,7 @@ class HBNBCommand(cmd.Cmd):
         """Prints the string representation of an instance"""
         line = shlex.split(arg)
         lst = [i for i in storage.all().keys()]
-        lst = [i.split(".")[1] for i in lst]
+        lst = [i.split(".")[1] for i in lst if i.split('.')[0] == line[0]]
         if len(line) < 1:
             print("** class name missing **")
         elif len(line) == 1:
@@ -71,7 +71,7 @@ class HBNBCommand(cmd.Cmd):
         """Deletes an instance based on the class name and id"""
         line = shlex.split(arg)
         lst = [i for i in storage.all().keys()]
-        lst = [i.split(".")[1] for i in lst]
+        lst = [i.split(".")[1] for i in lst if i.split('.')[0] == line[0]]
         if len(line) < 1:
             print("** class name missing **")
         elif line[0] not in class_map.keys():
